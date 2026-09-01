@@ -105,9 +105,9 @@
                                 @endif
                             </td>
                             <td class="p-3">
-                                @if($item->check_in_photo)
-                                    <a href="#" @click.prevent="openImagePreview('{{ asset('storage/' . $item->check_in_photo) }}')" class="block w-10 h-10 rounded-full overflow-hidden border border-slate-200 dark:border-slate-700 cursor-zoom-in shadow-sm">
-                                        <img src="{{ asset('storage/' . $item->check_in_photo) }}" class="w-full h-full object-cover" alt="Foto Masuk">
+                                @if($item->check_in_photo_url)
+                                    <a href="#" @click.prevent="openImagePreview('{{ $item->check_in_photo_url }}')" class="block w-10 h-10 rounded-full overflow-hidden border border-slate-200 dark:border-slate-700 cursor-zoom-in shadow-sm hover:scale-105 transition-transform">
+                                        <img src="{{ $item->check_in_photo_url }}" class="w-full h-full object-cover" alt="Foto Masuk">
                                     </a>
                                 @else
                                     <span class="text-slate-400 text-xs">-</span>
@@ -124,9 +124,9 @@
                                 @endif
                             </td>
                             <td class="p-3">
-                                @if($item->check_out_photo)
-                                    <a href="#" @click.prevent="openImagePreview('{{ asset('storage/' . $item->check_out_photo) }}')" class="block w-10 h-10 rounded-full overflow-hidden border border-slate-200 dark:border-slate-700 cursor-zoom-in shadow-sm">
-                                        <img src="{{ asset('storage/' . $item->check_out_photo) }}" class="w-full h-full object-cover" alt="Foto Pulang">
+                                @if($item->check_out_photo_url)
+                                    <a href="#" @click.prevent="openImagePreview('{{ $item->check_out_photo_url }}')" class="block w-10 h-10 rounded-full overflow-hidden border border-slate-200 dark:border-slate-700 cursor-zoom-in shadow-sm hover:scale-105 transition-transform">
+                                        <img src="{{ $item->check_out_photo_url }}" class="w-full h-full object-cover" alt="Foto Pulang">
                                     </a>
                                 @else
                                     <span class="text-slate-400 text-xs">-</span>
@@ -141,12 +141,20 @@
                                     <span>{{ $item->work_duration }}</span>
                                 </span>
                             </td>
-                            <td class="p-3 text-xs max-w-xs">
+                            <td class="p-3 text-xs space-y-1 max-w-xs">
                                 @if($item->location)
-                                    <div class="flex items-center gap-1 text-slate-700 dark:text-slate-300 font-semibold mb-0.5">
+                                    <div class="flex items-center gap-1">
                                         <svg class="w-3.5 h-3.5 text-blue-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                                        <a href="https://www.google.com/maps?q={{ urlencode($item->location) }}" target="_blank" class="text-blue-600 dark:text-blue-400 hover:underline truncate" title="Lihat di Google Maps">
-                                            {{ $item->location }}
+                                        <a href="{{ $item->check_in_map_url }}" target="_blank" class="text-blue-600 dark:text-blue-400 hover:underline font-mono truncate" title="Buka Lokasi Datang di Google Maps">
+                                            Masuk: {{ $item->location }} ↗
+                                        </a>
+                                    </div>
+                                @endif
+                                @if($item->location_out && $item->location_out !== $item->location)
+                                    <div class="flex items-center gap-1">
+                                        <svg class="w-3.5 h-3.5 text-purple-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                                        <a href="{{ $item->check_out_map_url }}" target="_blank" class="text-purple-600 dark:text-purple-400 hover:underline font-mono truncate" title="Buka Lokasi Pulang di Google Maps">
+                                            Pulang: {{ $item->location_out }} ↗
                                         </a>
                                     </div>
                                 @endif
@@ -154,7 +162,8 @@
                                     <p class="text-slate-500 dark:text-slate-400 italic truncate">
                                         {{ $item->check_in_notes ?? $item->check_out_notes }}
                                     </p>
-                                @elseif(!$item->location)
+                                @endif
+                                @if(!$item->location && !$item->check_in_notes && !$item->check_out_notes)
                                     <span class="text-slate-400">-</span>
                                 @endif
                             </td>

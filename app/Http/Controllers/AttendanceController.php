@@ -7,6 +7,7 @@ use App\Models\AttendanceSetting;
 use App\Models\Student;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class AttendanceController extends Controller
 {
@@ -93,7 +94,24 @@ class AttendanceController extends Controller
 
         $photoPath = null;
         if ($request->hasFile('photo')) {
-            $photoPath = $request->file('photo')->store('attendances', 'public');
+            $file = $request->file('photo');
+            $photoPath = Storage::disk('public')->putFile('attendances', $file);
+            
+            // Copy directly to public/uploads/attendances and public/storage/attendances for shared hosting compatibility
+            try {
+                $filename = basename($photoPath);
+                $uploadDir = public_path('uploads/attendances');
+                if (!file_exists($uploadDir)) {
+                    @mkdir($uploadDir, 0755, true);
+                }
+                @copy($file->getRealPath(), $uploadDir . '/' . $filename);
+
+                $storageDir = public_path('storage/attendances');
+                if (!file_exists($storageDir)) {
+                    @mkdir($storageDir, 0755, true);
+                }
+                @copy($file->getRealPath(), $storageDir . '/' . $filename);
+            } catch (\Exception $e) {}
         }
 
         Attendance::updateOrCreate(
@@ -151,18 +169,41 @@ class AttendanceController extends Controller
 
         $photoPath = null;
         if ($request->hasFile('photo')) {
-            $photoPath = $request->file('photo')->store('attendances', 'public');
+            $file = $request->file('photo');
+            $photoPath = Storage::disk('public')->putFile('attendances', $file);
+            
+            // Copy directly to public/uploads/attendances and public/storage/attendances for shared hosting compatibility
+            try {
+                $filename = basename($photoPath);
+                $uploadDir = public_path('uploads/attendances');
+                if (!file_exists($uploadDir)) {
+                    @mkdir($uploadDir, 0755, true);
+                }
+                @copy($file->getRealPath(), $uploadDir . '/' . $filename);
+
+                $storageDir = public_path('storage/attendances');
+                if (!file_exists($storageDir)) {
+                    @mkdir($storageDir, 0755, true);
+                }
+                @copy($file->getRealPath(), $storageDir . '/' . $filename);
+            } catch (\Exception $e) {}
         }
 
-        $location = $request->input('location') ?: $attendance->location;
+        $locationOut = $request->input('location') ?: $attendance->location;
 
-        $attendance->update([
+        $updateData = [
             'check_out_time' => $nowTime,
             'check_out_status' => $status,
             'check_out_notes' => $request->input('notes'),
             'check_out_photo' => $photoPath,
-            'location' => $location,
-        ]);
+            'location_out' => $locationOut,
+        ];
+
+        if (empty($attendance->location)) {
+            $updateData['location'] = $locationOut;
+        }
+
+        $attendance->update($updateData);
 
         $msg = ($status === 'Tepat Waktu')
             ? 'Presensi Pulang berhasil dicatat: Tepat Waktu (' . $nowTime . ')'

@@ -234,6 +234,7 @@ CREATE TABLE `attendances` (
   `check_out_notes` text COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `check_out_photo` longtext COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `location` text COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `location_out` text COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),

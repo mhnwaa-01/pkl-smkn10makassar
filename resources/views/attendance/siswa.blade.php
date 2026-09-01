@@ -50,18 +50,6 @@
     }
 }" x-init="initData()">
 
-    <!-- HTTP SSL Notice (If applicable) -->
-    <div x-data="{ isHttp: window.location.protocol === 'http:' && window.location.hostname !== 'localhost' }" x-show="isHttp"
-         class="bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800/80 rounded-2xl p-4 flex items-start gap-3 text-xs text-blue-900 dark:text-blue-200 shadow-sm" style="display: none;">
-        <svg class="w-5 h-5 flex-shrink-0 text-blue-600 dark:text-blue-400 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-        <div>
-            <strong class="font-bold">Info Akses Kamera & GPS:</strong>
-            <p class="mt-0.5 leading-relaxed">
-                Lokasi GPS Anda telah <strong>terdeteksi secara otomatis</strong>. Saat menekan tombol <strong>"Aktifkan Kamera"</strong>, sistem akan otomatis membuka kamera perangkat/HP Anda untuk mengambil foto selfie presensi.
-            </p>
-        </div>
-    </div>
-
     <!-- Page Header & Rules -->
     <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-5 sm:p-6 shadow-sm">
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -105,17 +93,24 @@
                         </div>
                         <h4 class="text-base font-bold text-emerald-900 dark:text-emerald-300">Presensi Datang Tercatat!</h4>
                         <p class="text-xs text-slate-600 dark:text-slate-300 font-medium">Jam Masuk: <strong class="font-mono text-slate-900 dark:text-white">{{ $todayAttendance->check_in_time }} WITA</strong></p>
-                        <span class="inline-block px-3 py-1 rounded-full text-xs font-bold uppercase
-                            @if($todayAttendance->check_in_status === 'Tepat Waktu') bg-emerald-200 text-emerald-900 dark:bg-emerald-900/60 dark:text-emerald-200
-                            @else bg-rose-200 text-rose-900 dark:bg-rose-900/60 dark:text-rose-200 @endif">
-                            Status: {{ $todayAttendance->check_in_status }}
-                        </span>
+                        <div>
+                            <span class="inline-block px-3 py-1 rounded-full text-xs font-bold uppercase
+                                @if($todayAttendance->check_in_status === 'Tepat Waktu') bg-emerald-200 text-emerald-900 dark:bg-emerald-900/60 dark:text-emerald-200
+                                @else bg-rose-200 text-rose-900 dark:bg-rose-900/60 dark:text-rose-200 @endif">
+                                Status: {{ $todayAttendance->check_in_status }}
+                            </span>
+                        </div>
+                        
                         @if($todayAttendance->location)
-                            <div class="text-[11px] text-slate-500 dark:text-slate-400 flex items-center justify-center gap-1 mt-1 font-semibold">
-                                <svg class="w-3.5 h-3.5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                                <span>Lokasi: {{ $todayAttendance->location }}</span>
+                            <div class="pt-1">
+                                <a href="{{ $todayAttendance->check_in_map_url }}" target="_blank" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-blue-50 hover:bg-blue-100 dark:bg-blue-950/60 dark:hover:bg-blue-900/60 text-blue-700 dark:text-blue-300 rounded-full text-xs font-semibold transition-colors shadow-sm">
+                                    <svg class="w-3.5 h-3.5 text-blue-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                                    <span>Lokasi Datang: {{ $todayAttendance->location }}</span>
+                                    <span class="text-[10px] text-blue-500 font-mono underline">(Buka Google Maps ↗)</span>
+                                </a>
                             </div>
                         @endif
+
                         @if($todayAttendance->check_in_notes)
                             <p class="text-xs text-slate-500 dark:text-slate-400 italic mt-1">"{{ $todayAttendance->check_in_notes }}"</p>
                         @endif
@@ -143,7 +138,7 @@
                         </div>
 
                         <div>
-                            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">Foto Wajah Presensi</label>
+                            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">Foto Wajah Presensi Datang</label>
                             <!-- Hidden File Input that supports native camera capture on all devices -->
                             <input type="file" name="photo" id="photo_in" accept="image/*" capture="user" @change="handleFileInput($event)" required class="hidden">
                             
@@ -217,7 +212,7 @@
                         </div>
                         <h4 class="text-base font-bold text-purple-900 dark:text-purple-300">Presensi Pulang Tercatat!</h4>
                         <p class="text-xs text-slate-600 dark:text-slate-300 font-medium">Jam Pulang: <strong class="font-mono text-slate-900 dark:text-white">{{ $todayAttendance->check_out_time }} WITA</strong></p>
-                        <div class="flex items-center justify-center gap-2">
+                        <div class="flex flex-wrap items-center justify-center gap-2">
                             <span class="inline-block px-3 py-1 rounded-full text-xs font-bold uppercase
                                 @if($todayAttendance->check_out_status === 'Tepat Waktu') bg-purple-200 text-purple-900 dark:bg-purple-900/60 dark:text-purple-200
                                 @else bg-amber-200 text-amber-900 dark:bg-amber-900/60 dark:text-amber-200 @endif">
@@ -227,6 +222,17 @@
                                 Lama Kerja: {{ $todayAttendance->work_duration }}
                             </span>
                         </div>
+
+                        @if($todayAttendance->location_out ?: $todayAttendance->location)
+                            <div class="pt-1">
+                                <a href="{{ $todayAttendance->check_out_map_url }}" target="_blank" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-purple-50 hover:bg-purple-100 dark:bg-purple-950/60 dark:hover:bg-purple-900/60 text-purple-700 dark:text-purple-300 rounded-full text-xs font-semibold transition-colors shadow-sm">
+                                    <svg class="w-3.5 h-3.5 text-purple-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                                    <span>Lokasi Pulang: {{ $todayAttendance->location_out ?: $todayAttendance->location }}</span>
+                                    <span class="text-[10px] text-purple-500 font-mono underline">(Buka Google Maps ↗)</span>
+                                </a>
+                            </div>
+                        @endif
+
                         @if($todayAttendance->check_out_notes)
                             <p class="text-xs text-slate-500 dark:text-slate-400 italic mt-1">"{{ $todayAttendance->check_out_notes }}"</p>
                         @endif
@@ -338,78 +344,117 @@
                 <thead class="bg-slate-50 dark:bg-slate-950 text-slate-500 dark:text-slate-400 uppercase tracking-wider font-bold border-b border-slate-200 dark:border-slate-800">
                     <tr>
                         <th class="p-3">Tanggal</th>
-                        <th class="p-3">Jam Datang</th>
+                        <th class="p-3">Presensi Datang</th>
                         <th class="p-3">Foto Datang</th>
-                        <th class="p-3">Jam Pulang</th>
+                        <th class="p-3">Presensi Pulang</th>
                         <th class="p-3">Foto Pulang</th>
                         <th class="p-3">Lama Kerja</th>
-                        <th class="p-3">Lokasi / Catatan</th>
+                        <th class="p-3">Catatan</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
                     @forelse($attendances as $att)
                         <tr class="hover:bg-slate-50/50 dark:hover:bg-slate-800/50 transition-colors">
-                            <td class="p-3 font-semibold text-slate-900 dark:text-white">
+                            <!-- Tanggal -->
+                            <td class="p-3 font-semibold text-slate-900 dark:text-white whitespace-nowrap">
                                 {{ \Carbon\Carbon::parse($att->date)->translatedFormat('l, d F Y') }}
                             </td>
-                            <td class="p-3">
+                            
+                            <!-- Presensi Datang -->
+                            <td class="p-3 whitespace-nowrap">
                                 @if($att->check_in_time)
                                     <div class="space-y-1">
-                                        <span class="font-mono font-bold text-emerald-600 dark:text-emerald-400">{{ $att->check_in_time }} WITA</span>
-                                        <span class="block text-[10px] font-bold uppercase
-                                            @if($att->check_in_status === 'Tepat Waktu') text-emerald-500
-                                            @else text-rose-500 @endif">
-                                            {{ $att->check_in_status }}
-                                        </span>
+                                        <div class="flex items-center gap-1.5">
+                                            <span class="font-mono font-bold text-emerald-600 dark:text-emerald-400">{{ $att->check_in_time }} WITA</span>
+                                            <span class="text-[10px] font-bold uppercase px-2 py-0.5 rounded-full
+                                                @if($att->check_in_status === 'Tepat Waktu') bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300
+                                                @else bg-rose-100 text-rose-800 dark:bg-rose-950/60 dark:text-rose-300 @endif">
+                                                {{ $att->check_in_status }}
+                                            </span>
+                                        </div>
+                                        @if($att->location)
+                                            <a href="{{ $att->check_in_map_url }}" target="_blank" class="inline-flex items-center gap-1 font-mono text-[11px] text-blue-600 dark:text-blue-400 hover:underline">
+                                                <svg class="w-3.5 h-3.5 text-blue-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                                                <span>{{ $att->location }}</span>
+                                                <span class="text-[9px] text-blue-500 font-sans">↗</span>
+                                            </a>
+                                        @endif
                                     </div>
                                 @else
                                     <span class="text-slate-400">-</span>
                                 @endif
                             </td>
+
+                            <!-- Foto Datang -->
                             <td class="p-3">
-                                @if($att->check_in_photo)
-                                    <button type="button" @click="openImagePreview('{{ asset($att->check_in_photo) }}')" class="group relative block w-10 h-10 rounded-xl overflow-hidden border border-slate-200 dark:border-slate-700 shadow-sm">
-                                        <img src="{{ asset($att->check_in_photo) }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform" alt="Foto Datang">
+                                @if($att->check_in_photo_url)
+                                    <button type="button" @click="openImagePreview('{{ $att->check_in_photo_url }}')" class="group relative block w-10 h-10 rounded-xl overflow-hidden border border-slate-200 dark:border-slate-700 shadow-sm hover:scale-105 transition-transform">
+                                        <img src="{{ $att->check_in_photo_url }}" class="w-full h-full object-cover" alt="Foto Datang">
                                     </button>
                                 @else
                                     <span class="text-slate-400">-</span>
                                 @endif
                             </td>
-                            <td class="p-3">
+
+                            <!-- Presensi Pulang -->
+                            <td class="p-3 whitespace-nowrap">
                                 @if($att->check_out_time)
                                     <div class="space-y-1">
-                                        <span class="font-mono font-bold text-purple-600 dark:text-purple-400">{{ $att->check_out_time }} WITA</span>
-                                        <span class="block text-[10px] font-bold uppercase
-                                            @if($att->check_out_status === 'Tepat Waktu') text-purple-500
-                                            @else text-amber-500 @endif">
-                                            {{ $att->check_out_status }}
-                                        </span>
+                                        <div class="flex items-center gap-1.5">
+                                            <span class="font-mono font-bold text-purple-600 dark:text-purple-400">{{ $att->check_out_time }} WITA</span>
+                                            <span class="text-[10px] font-bold uppercase px-2 py-0.5 rounded-full
+                                                @if($att->check_out_status === 'Tepat Waktu') bg-purple-100 text-purple-800 dark:bg-purple-950/60 dark:text-purple-300
+                                                @else bg-amber-100 text-amber-800 dark:bg-amber-950/60 dark:text-amber-300 @endif">
+                                                {{ $att->check_out_status }}
+                                            </span>
+                                        </div>
+                                        @if($att->location_out ?: $att->location)
+                                            <a href="{{ $att->check_out_map_url }}" target="_blank" class="inline-flex items-center gap-1 font-mono text-[11px] text-purple-600 dark:text-purple-400 hover:underline">
+                                                <svg class="w-3.5 h-3.5 text-purple-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                                                <span>{{ $att->location_out ?: $att->location }}</span>
+                                                <span class="text-[9px] text-purple-500 font-sans">↗</span>
+                                            </a>
+                                        @endif
                                     </div>
                                 @else
                                     <span class="text-slate-400">-</span>
                                 @endif
                             </td>
+
+                            <!-- Foto Pulang -->
                             <td class="p-3">
-                                @if($att->check_out_photo)
-                                    <button type="button" @click="openImagePreview('{{ asset($att->check_out_photo) }}')" class="group relative block w-10 h-10 rounded-xl overflow-hidden border border-slate-200 dark:border-slate-700 shadow-sm">
-                                        <img src="{{ asset($att->check_out_photo) }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform" alt="Foto Pulang">
+                                @if($att->check_out_photo_url)
+                                    <button type="button" @click="openImagePreview('{{ $att->check_out_photo_url }}')" class="group relative block w-10 h-10 rounded-xl overflow-hidden border border-slate-200 dark:border-slate-700 shadow-sm hover:scale-105 transition-transform">
+                                        <img src="{{ $att->check_out_photo_url }}" class="w-full h-full object-cover" alt="Foto Pulang">
                                     </button>
                                 @else
                                     <span class="text-slate-400">-</span>
                                 @endif
                             </td>
-                            <td class="p-3 font-semibold text-slate-700 dark:text-slate-300">
-                                {{ $att->work_duration ?? '-' }}
+
+                            <!-- Lama Kerja -->
+                            <td class="p-3 font-semibold text-slate-700 dark:text-slate-300 whitespace-nowrap">
+                                <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold
+                                    @if($att->work_duration === '-') bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400
+                                    @elseif($att->work_duration === 'Sedang Berlangsung') bg-blue-100 text-blue-800 dark:bg-blue-900/40 dark:text-blue-300 animate-pulse
+                                    @else bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-300 @endif">
+                                    {{ $att->work_duration ?? '-' }}
+                                </span>
                             </td>
-                            <td class="p-3 text-slate-500 dark:text-slate-400">
-                                @if($att->location)
-                                    <div class="flex items-center gap-1 font-mono text-[10px] text-blue-600 dark:text-blue-400 mb-0.5">
-                                        <svg class="w-3 h-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                                        <span>{{ $att->location }}</span>
-                                    </div>
-                                @endif
+
+                            <!-- Catatan -->
+                            <td class="p-3 text-slate-500 dark:text-slate-400 text-xs max-w-xs">
                                 @if($att->check_in_notes || $att->check_out_notes)
-                                    <span class="italic text-[11px] block truncate max-w-xs">{{ $att->check_in_notes ?? $att->check_out_notes }}</span>
+                                    <div class="space-y-0.5">
+                                        @if($att->check_in_notes)
+                                            <p class="truncate"><strong class="text-slate-700 dark:text-slate-300">Datang:</strong> "{{ $att->check_in_notes }}"</p>
+                                        @endif
+                                        @if($att->check_out_notes)
+                                            <p class="truncate"><strong class="text-slate-700 dark:text-slate-300">Pulang:</strong> "{{ $att->check_out_notes }}"</p>
+                                        @endif
+                                    </div>
+                                @else
+                                    <span class="text-slate-400">-</span>
                                 @endif
                             </td>
                         </tr>

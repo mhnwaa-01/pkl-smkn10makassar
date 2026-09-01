@@ -26,11 +26,76 @@ class Attendance extends Model
         'check_out_notes',
         'check_out_photo',
         'location',
+        'location_out',
     ];
 
     public function student()
     {
         return $this->belongsTo(Student::class);
+    }
+
+    /**
+     * Resolves Check-in Photo URL with fallback for direct public uploads and storage paths.
+     */
+    public function getCheckInPhotoUrlAttribute(): ?string
+    {
+        return $this->resolvePhotoUrl($this->check_in_photo);
+    }
+
+    /**
+     * Resolves Check-out Photo URL with fallback for direct public uploads and storage paths.
+     */
+    public function getCheckOutPhotoUrlAttribute(): ?string
+    {
+        return $this->resolvePhotoUrl($this->check_out_photo);
+    }
+
+    private function resolvePhotoUrl(?string $path): ?string
+    {
+        if (empty($path)) {
+            return null;
+        }
+
+        if (str_starts_with($path, 'http://') || str_starts_with($path, 'https://') || str_starts_with($path, 'data:')) {
+            return $path;
+        }
+
+        if (str_starts_with($path, 'uploads/')) {
+            return asset($path);
+        }
+
+        if (str_starts_with($path, 'storage/')) {
+            return asset($path);
+        }
+
+        if (file_exists(public_path('uploads/' . $path))) {
+            return asset('uploads/' . $path);
+        }
+
+        return asset('storage/' . $path);
+    }
+
+    /**
+     * Google Maps link for Check-In Location
+     */
+    public function getCheckInMapUrlAttribute(): ?string
+    {
+        if (empty($this->location)) {
+            return null;
+        }
+        return 'https://www.google.com/maps?q=' . urlencode(trim($this->location));
+    }
+
+    /**
+     * Google Maps link for Check-Out Location
+     */
+    public function getCheckOutMapUrlAttribute(): ?string
+    {
+        $loc = $this->location_out ?: $this->location;
+        if (empty($loc)) {
+            return null;
+        }
+        return 'https://www.google.com/maps?q=' . urlencode(trim($loc));
     }
 
     /**
