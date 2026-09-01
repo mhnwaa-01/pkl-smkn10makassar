@@ -53,27 +53,48 @@
                 capturedPhoto: null,
                 stream: null,
                 loading: false,
+                fallbackMode: false,
                 async startCamera() {
                     this.loading = true;
-                    try {
-                        this.stream = await navigator.mediaDevices.getUserMedia({
-                            video: { facingMode: 'user', width: { ideal: 640 }, height: { ideal: 480 } },
-                            audio: false
-                        });
-                        this.$refs.video.srcObject = this.stream;
-                        this.streamActive = true;
-                    } catch (err) {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Kamera Tidak Tersedia',
-                            text: 'Pastikan izin akses kamera telah diberikan pada browser Anda.',
-                            timer: 2500,
-                            timerProgressBar: true,
-                            showConfirmButton: false
-                        });
-                        console.error('Camera error:', err);
-                    } finally {
-                        this.loading = false;
+                    // Check if WebRTC getUserMedia is available (HTTPS / Localhost)
+                    if (navigator.mediaDevices && typeof navigator.mediaDevices.getUserMedia === 'function') {
+                        try {
+                            this.stream = await navigator.mediaDevices.getUserMedia({
+                                video: { facingMode: 'user', width: { ideal: 640 }, height: { ideal: 480 } },
+                                audio: false
+                            });
+                            if (this.$refs.video) {
+                                this.$refs.video.srcObject = this.stream;
+                            }
+                            this.streamActive = true;
+                            this.fallbackMode = false;
+                            this.loading = false;
+                            return;
+                        } catch (err) {
+                            console.warn('WebRTC getUserMedia error or permission denied, switching to native camera fallback:', err);
+                        }
+                    }
+
+                    // Fallback for HTTP or unsupported environments: Trigger native device camera
+                    this.loading = false;
+                    this.fallbackMode = true;
+                    this.triggerNativeCamera();
+                },
+                triggerNativeCamera() {
+                    const fileInput = document.getElementById(targetInputId);
+                    if (fileInput) {
+                        fileInput.click();
+                    }
+                },
+                handleFileInput(e) {
+                    const file = e.target.files && e.target.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = (event) => {
+                            this.capturedPhoto = event.target.result;
+                            this.stopCamera();
+                        };
+                        reader.readAsDataURL(file);
                     }
                 },
                 stopCamera() {
