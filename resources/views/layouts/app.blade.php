@@ -383,40 +383,17 @@
 
         </div>
 
-        <!-- Sidebar Role Switcher & User Footer (Fixed at Bottom) -->
-        <div class="p-3 border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50 space-y-2 flex-shrink-0">
-            <!-- Fast Role Switcher in Sidebar -->
-            <div class="p-2 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
-                <span class="text-[9px] text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider block mb-1 px-1">Ganti Akses Cepat:</span>
-                <div class="grid grid-cols-2 gap-1 text-[11px]">
-                    <a href="{{ route('switch-role', 'admin') }}" 
-                        class="px-2 py-1 rounded-full font-bold text-center transition-colors {{ Auth::user()->isAdmin() ? 'bg-blue-600 text-white shadow-sm' : 'bg-slate-100 dark:bg-slate-900 text-slate-700 dark:text-slate-300 hover:bg-slate-200' }}">
-                        👑 Admin
-                    </a>
-                    <a href="{{ route('switch-role', 'guru') }}" 
-                        class="px-2 py-1 rounded-full font-bold text-center transition-colors {{ Auth::user()->isGuru() ? 'bg-emerald-600 text-white shadow-sm' : 'bg-slate-100 dark:bg-slate-900 text-slate-700 dark:text-slate-300 hover:bg-slate-200' }}">
-                        👨‍🏫 Guru
-                    </a>
-                    <a href="{{ route('switch-role', 'industri') }}" 
-                        class="px-2 py-1 rounded-full font-bold text-center transition-colors {{ Auth::user()->isIndustri() ? 'bg-amber-600 text-white shadow-sm' : 'bg-slate-100 dark:bg-slate-900 text-slate-700 dark:text-slate-300 hover:bg-slate-200' }}">
-                        🏢 Industri
-                    </a>
-                    <a href="{{ route('switch-role', 'siswa') }}" 
-                        class="px-2 py-1 rounded-full font-bold text-center transition-colors {{ Auth::user()->isSiswa() ? 'bg-purple-600 text-white shadow-sm' : 'bg-slate-100 dark:bg-slate-900 text-slate-700 dark:text-slate-300 hover:bg-slate-200' }}">
-                        🎓 Siswa
-                    </a>
-                </div>
-            </div>
-
+        <!-- Sidebar User Footer (Fixed at Bottom) -->
+        <div class="p-3 border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50 flex-shrink-0">
             <!-- Profile Info & Logout Button -->
-            <div class="flex items-center justify-between gap-2 p-1.5 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm">
-                <div class="flex items-center gap-2 overflow-hidden min-w-0">
-                    <div class="w-7 h-7 rounded-full bg-blue-600 text-white font-bold flex items-center justify-center flex-shrink-0 text-xs shadow-sm">
+            <div class="flex items-center justify-between gap-2 p-2 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm">
+                <div class="flex items-center gap-2.5 overflow-hidden min-w-0">
+                    <div class="w-8 h-8 rounded-full bg-blue-600 text-white font-bold flex items-center justify-center flex-shrink-0 text-xs shadow-sm">
                         {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
                     </div>
                     <div class="truncate">
                         <p class="text-xs font-bold text-slate-900 dark:text-white truncate">{{ Auth::user()->name }}</p>
-                        <span class="inline-block px-2 py-0.2 text-[9px] font-bold rounded-full uppercase
+                        <span class="inline-block px-2 py-0.5 text-[9px] font-bold rounded-full uppercase
                             @if(Auth::user()->isAdmin()) bg-rose-100 text-rose-700 dark:bg-rose-900/40 dark:text-rose-300
                             @elseif(Auth::user()->isGuru()) bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300
                             @elseif(Auth::user()->isIndustri()) bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300
@@ -427,7 +404,7 @@
                 </div>
                 <form action="{{ route('logout') }}" method="POST" class="flex-shrink-0">
                     @csrf
-                    <button type="submit" title="Keluar" class="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-900/20 rounded-full transition-colors">
+                    <button type="submit" title="Keluar" class="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-900/20 rounded-xl transition-colors">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
                     </button>
                 </form>
@@ -451,72 +428,10 @@
                 </div>
             </div>
 
-            <!-- Right: Role Switcher & Utilities -->
-            <div class="flex items-center gap-2 text-xs flex-shrink-0">
-                
-                <!-- Full Segmented Role Switcher on XL+ Screens -->
-                <div class="hidden xl:flex items-center bg-slate-100 dark:bg-slate-950 p-1 rounded-full border border-slate-200 dark:border-slate-800 shadow-sm">
-                    <span class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase px-2.5">Akses:</span>
-                    
-                    <a href="{{ route('switch-role', 'admin') }}" title="Ganti akses ke Administrator"
-                        class="px-3 py-1 rounded-full font-bold text-xs transition-colors inline-flex items-center gap-1 {{ Auth::user()->isAdmin() ? 'bg-blue-600 text-white shadow-sm' : 'text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800' }}">
-                        <span>👑</span>
-                        <span>Admin</span>
-                    </a>
-
-                    <a href="{{ route('switch-role', 'guru') }}" title="Ganti akses ke Guru Pembimbing"
-                        class="px-3 py-1 rounded-full font-bold text-xs transition-colors inline-flex items-center gap-1 {{ Auth::user()->isGuru() ? 'bg-emerald-600 text-white shadow-sm' : 'text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800' }}">
-                        <span>👨‍🏫</span>
-                        <span>Guru</span>
-                    </a>
-
-                    <a href="{{ route('switch-role', 'industri') }}" title="Ganti akses ke Pembimbing Industri"
-                        class="px-3 py-1 rounded-full font-bold text-xs transition-colors inline-flex items-center gap-1 {{ Auth::user()->isIndustri() ? 'bg-amber-600 text-white shadow-sm' : 'text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800' }}">
-                        <span>🏢</span>
-                        <span>Industri</span>
-                    </a>
-
-                    <a href="{{ route('switch-role', 'siswa') }}" title="Ganti akses ke Siswa PKL"
-                        class="px-3 py-1 rounded-full font-bold text-xs transition-colors inline-flex items-center gap-1 {{ Auth::user()->isSiswa() ? 'bg-purple-600 text-white shadow-sm' : 'text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800' }}">
-                        <span>🎓</span>
-                        <span>Siswa</span>
-                    </a>
-                </div>
-
-                <!-- Compact Dropdown Role Switcher for Mobile & Tablet (< XL) -->
-                <div class="relative xl:hidden" @click.away="headerRoleDropdown = false">
-                    <button type="button" @click="headerRoleDropdown = !headerRoleDropdown"
-                        class="px-3 py-1.5 rounded-full font-bold text-xs bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200 shadow-sm inline-flex items-center gap-1.5">
-                        <span>
-                            @if(Auth::user()->isAdmin()) 👑 Admin
-                            @elseif(Auth::user()->isGuru()) 👨‍🏫 Guru
-                            @elseif(Auth::user()->isIndustri()) 🏢 Industri
-                            @else 🎓 Siswa @endif
-                        </span>
-                        <svg class="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
-                    </button>
-
-                    <!-- Dropdown Menu -->
-                    <div x-show="headerRoleDropdown" x-transition.origin.top.right
-                        class="absolute right-0 mt-2 w-48 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-xl py-2 z-50 space-y-1" style="display: none;">
-                        <span class="block px-3 py-1 text-[10px] font-bold text-slate-400 uppercase tracking-wider">Pilih Hak Akses:</span>
-                        <a href="{{ route('switch-role', 'admin') }}" class="flex items-center gap-2 px-3.5 py-1.5 text-xs font-semibold hover:bg-slate-100 dark:hover:bg-slate-800 {{ Auth::user()->isAdmin() ? 'text-blue-600 font-bold' : 'text-slate-700 dark:text-slate-300' }}">
-                            <span>👑</span> <span>Administrator</span>
-                        </a>
-                        <a href="{{ route('switch-role', 'guru') }}" class="flex items-center gap-2 px-3.5 py-1.5 text-xs font-semibold hover:bg-slate-100 dark:hover:bg-slate-800 {{ Auth::user()->isGuru() ? 'text-emerald-600 font-bold' : 'text-slate-700 dark:text-slate-300' }}">
-                            <span>👨‍🏫</span> <span>Guru Pembimbing</span>
-                        </a>
-                        <a href="{{ route('switch-role', 'industri') }}" class="flex items-center gap-2 px-3.5 py-1.5 text-xs font-semibold hover:bg-slate-100 dark:hover:bg-slate-800 {{ Auth::user()->isIndustri() ? 'text-amber-600 font-bold' : 'text-slate-700 dark:text-slate-300' }}">
-                            <span>🏢</span> <span>Pembimbing Industri</span>
-                        </a>
-                        <a href="{{ route('switch-role', 'siswa') }}" class="flex items-center gap-2 px-3.5 py-1.5 text-xs font-semibold hover:bg-slate-100 dark:hover:bg-slate-800 {{ Auth::user()->isSiswa() ? 'text-purple-600 font-bold' : 'text-slate-700 dark:text-slate-300' }}">
-                            <span>🎓</span> <span>Siswa PKL</span>
-                        </a>
-                    </div>
-                </div>
-
+            <!-- Right: Utilities (Theme Toggle & Date) -->
+            <div class="flex items-center gap-2.5 text-xs flex-shrink-0">
                 <!-- Theme Toggle Button -->
-                <button @click="toggleTheme()" class="p-2 text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-amber-400 rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 transition-colors flex items-center justify-center shadow-sm" title="Ubah Tema">
+                <button @click="toggleTheme()" class="p-2.5 text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-amber-400 rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 transition-colors flex items-center justify-center shadow-sm" title="Ubah Tema">
                     <!-- Sun Icon (Dark Mode active) -->
                     <svg x-show="darkMode" class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m0-12.728l.707.707m12.728 12.728l.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"/>
@@ -527,8 +442,8 @@
                     </svg>
                 </button>
 
-                <!-- Date Badge on Large Screen -->
-                <div class="hidden 2xl:flex items-center gap-1.5 bg-slate-100 dark:bg-slate-800 px-3.5 py-1.5 rounded-full border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-semibold shadow-sm">
+                <!-- Date Badge -->
+                <div class="flex items-center gap-2 bg-slate-100 dark:bg-slate-800 px-3.5 py-2 rounded-full border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-semibold shadow-sm">
                     <svg class="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
                     <span>@formatdate(now())</span>
                 </div>
