@@ -49,6 +49,14 @@ foreach ($defaults as $key => $val) {
     }
 }
 
+// Auto-correct DB_HOST if mistakenly entered as port number 5432
+if (isset($_ENV['DB_HOST']) && (is_numeric($_ENV['DB_HOST']) || $_ENV['DB_HOST'] === '5432')) {
+    $supabaseHost = 'db.awnxwzqlmfkmveutltdi.supabase.co';
+    $_ENV['DB_HOST'] = $supabaseHost;
+    $_SERVER['DB_HOST'] = $supabaseHost;
+    putenv("DB_HOST=$supabaseHost");
+}
+
 // 3. Ensure APP_KEY exists so Laravel never throws encryption key exception
 if (empty($_ENV['APP_KEY']) || trim((string)$_ENV['APP_KEY']) === '') {
     $defaultKey = 'base64:3w1sP8dJgG8rQ3z4Y6kL9mNxVbC2fH0tE5uI7oP1aRs=';
