@@ -1,6 +1,6 @@
 <?php
 
-// Prepare temporary writable directories in /tmp for Vercel Serverless
+// 1. Prepare temporary writable directories in /tmp for Vercel Serverless
 $storagePaths = [
     '/tmp/storage/app/public',
     '/tmp/storage/framework/cache/data',
@@ -16,7 +16,7 @@ foreach ($storagePaths as $path) {
     }
 }
 
-// Set environment variables for Vercel
+// 2. Set environment variables for Vercel
 $_ENV['VERCEL'] = '1';
 $_SERVER['VERCEL'] = '1';
 putenv('VERCEL=1');
@@ -27,17 +27,32 @@ $_ENV['APP_PACKAGES_CACHE'] = '/tmp/bootstrap/cache/packages.php';
 $_ENV['APP_ROUTES_CACHE'] = '/tmp/bootstrap/cache/routes.php';
 $_ENV['APP_SERVICES_CACHE'] = '/tmp/bootstrap/cache/services.php';
 $_ENV['VIEW_COMPILED_PATH'] = '/tmp/storage/framework/views';
-$_ENV['CACHE_STORE'] = $_ENV['CACHE_STORE'] ?? 'array';
-$_ENV['SESSION_DRIVER'] = $_ENV['SESSION_DRIVER'] ?? 'cookie';
-$_ENV['LOG_CHANNEL'] = $_ENV['LOG_CHANNEL'] ?? 'stderr';
 
-// Ensure APP_KEY exists so Laravel never throws 500 encryption key exception
-if (empty($_ENV['APP_KEY']) && empty(getenv('APP_KEY'))) {
+$defaults = [
+    'CACHE_STORE' => 'array',
+    'CACHE_DRIVER' => 'array',
+    'SESSION_DRIVER' => 'cookie',
+    'LOG_CHANNEL' => 'stderr',
+    'QUEUE_CONNECTION' => 'sync',
+    'MAIL_MAILER' => 'log',
+    'DB_CONNECTION' => 'pgsql',
+];
+
+foreach ($defaults as $key => $val) {
+    if (empty($_ENV[$key]) || trim((string)$_ENV[$key]) === '') {
+        $_ENV[$key] = $val;
+        $_SERVER[$key] = $val;
+        putenv("$key=$val");
+    }
+}
+
+// 3. Ensure APP_KEY exists so Laravel never throws encryption key exception
+if (empty($_ENV['APP_KEY']) || trim((string)$_ENV['APP_KEY']) === '') {
     $defaultKey = 'base64:3w1sP8dJgG8rQ3z4Y6kL9mNxVbC2fH0tE5uI7oP1aRs=';
     $_ENV['APP_KEY'] = $defaultKey;
     $_SERVER['APP_KEY'] = $defaultKey;
     putenv("APP_KEY=$defaultKey");
 }
 
-// Forward request to Laravel's public index
+// 4. Forward request to Laravel's public index
 require __DIR__ . '/../public/index.php';
