@@ -5,8 +5,8 @@
 @section('content')
 <div class="min-h-screen w-full grid grid-cols-1 lg:grid-cols-12 bg-white dark:bg-slate-900 m-0 p-0">
     
-    <!-- Kolom Kiri: Hero Image Gedung SMKN 10 Makassar (Fullscreen Left) -->
-    <div class="lg:col-span-7 relative flex flex-col justify-between p-8 sm:p-12 lg:p-14 xl:p-16 text-white bg-slate-950 overflow-hidden min-h-[420px] lg:min-h-screen">
+    <!-- Kolom Kiri: Hero Image Gedung SMKN 10 Makassar (Hanya Muncul di Desktop >= lg) -->
+    <div class="hidden lg:flex lg:col-span-7 relative flex-col justify-between p-12 lg:p-14 xl:p-16 text-white bg-slate-950 overflow-hidden min-h-screen">
         <!-- School Photo Background with Smooth Scale -->
         <div class="absolute inset-0 bg-cover bg-center transition-transform duration-1000 scale-100 hover:scale-105"
              style="background-image: url('https://rakyatsulsel.fajar.co.id/wp-content/uploads/2026/07/IMG-20260718-WA0006-scaled-e1784335208513.jpg');">
@@ -76,16 +76,23 @@
         </div>
     </div>
 
-    <!-- Kolom Kanan: Form Login Fullscreen (Right Side) -->
-    <div class="lg:col-span-5 flex flex-col justify-between items-center p-6 sm:p-10 lg:p-12 xl:p-16 min-h-screen bg-white dark:bg-slate-900">
+    <!-- Kolom Kanan: Form Login (Fullscreen di Mobile, 5-Kolom di Desktop) -->
+    <div class="col-span-12 lg:col-span-5 flex flex-col justify-between items-center p-6 sm:p-10 lg:p-12 xl:p-16 min-h-screen bg-white dark:bg-slate-900 w-full">
         
-        <div class="w-full max-w-md my-auto py-8">
-            <!-- Form Title -->
-            <div class="mb-8">
-                <!-- Mobile only logo display -->
-                <div class="inline-flex lg:hidden items-center justify-center w-16 h-16 rounded-2xl bg-slate-50 dark:bg-slate-800 p-2.5 mb-4 border border-slate-200 dark:border-slate-700 shadow-sm">
-                    <img src="{{ asset('logo-sekolah.png') }}" class="w-full h-full object-contain" width="64" height="64" alt="Logo SMKN 10 Makassar">
+        <div class="w-full max-w-md my-auto py-6 sm:py-8">
+            <!-- Form Title & Mobile Branding -->
+            <div class="mb-8 text-center lg:text-left">
+                <!-- Mobile only logo & title display -->
+                <div class="inline-flex lg:hidden items-center justify-center w-20 h-20 rounded-2xl bg-slate-50 dark:bg-slate-800 p-3 mb-3 border border-slate-200 dark:border-slate-700 shadow-md">
+                    <img src="{{ asset('logo-sekolah.png') }}" class="w-full h-full object-contain" width="80" height="80" alt="Logo SMKN 10 Makassar">
                 </div>
+                <div class="lg:hidden mb-4">
+                    <span class="inline-flex items-center gap-1.5 text-[10px] font-extrabold tracking-wider text-emerald-600 dark:text-emerald-400 uppercase bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800 px-3 py-0.5 rounded-full mb-1">
+                        PORTAL RESMI PKL
+                    </span>
+                    <h1 class="text-xl font-black text-slate-900 dark:text-white tracking-tight">SMK Negeri 10 Makassar</h1>
+                </div>
+                
                 <h2 class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">Masuk ke Akun</h2>
                 <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1.5 font-medium">Gunakan username dan password yang telah didaftarkan untuk masuk ke sistem.</p>
             </div>
