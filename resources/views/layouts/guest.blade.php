@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" class="h-full">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -53,7 +53,7 @@
         }
     </style>
 </head>
-<body class="min-h-screen flex items-center justify-center p-3 sm:p-6 lg:p-8 bg-slate-100 dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors duration-200" x-data="{
+<body class="min-h-screen w-full m-0 p-0 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 overflow-x-hidden selection:bg-blue-500 selection:text-white" x-data="{
     darkMode: document.documentElement.classList.contains('dark'),
     toggleTheme() {
         this.darkMode = !this.darkMode;
@@ -109,9 +109,9 @@
     </script>
     @endif
 
-    <!-- Top Theme Toggle -->
-    <div class="fixed top-4 right-4 sm:top-6 sm:right-6 z-50">
-        <button @click="toggleTheme()" aria-label="Toggle Dark Mode" class="p-2.5 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border border-slate-200 dark:border-slate-800 rounded-full shadow-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition-all text-slate-700 dark:text-amber-400">
+    <!-- Top Theme Toggle Floating Button -->
+    <div class="fixed top-5 right-5 z-50">
+        <button @click="toggleTheme()" aria-label="Toggle Dark Mode" class="p-2.5 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border border-slate-200 dark:border-slate-800 rounded-full shadow-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-all text-slate-700 dark:text-amber-400">
             <template x-if="darkMode">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 000-8z"/></svg>
             </template>
@@ -121,8 +121,7 @@
         </button>
     </div>
 
-    <div class="w-full max-w-5xl my-auto">
-        @yield('content')
-    </div>
+    <!-- Main Edge-to-Edge Content -->
+    @yield('content')
 </body>
 </html>
