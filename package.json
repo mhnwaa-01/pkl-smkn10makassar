@@ -3,8 +3,9 @@
     "private": true,
     "type": "module",
     "scripts": {
+        "dev": "vite",
         "build": "vite build",
-        "dev": "vite"
+        "vercel-build": "composer install --no-dev --prefer-dist --optimize-autoloader && php artisan config:clear"
     },
     "devDependencies": {
         "@tailwindcss/vite": "^4.0.0",
