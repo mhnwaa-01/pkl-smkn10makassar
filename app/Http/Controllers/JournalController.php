@@ -77,22 +77,27 @@ class JournalController extends Controller
         $photoPath = null;
         if ($request->hasFile('photo')) {
             $file = $request->file('photo');
-            $photoPath = Storage::disk('public')->putFile('journals', $file);
-            
-            // Copy directly to public/uploads/journals and public/storage/journals
-            try {
-                $filename = basename($photoPath);
-                $uploadDir = public_path('uploads/journals');
-                if (!file_exists($uploadDir)) {
-                    @mkdir($uploadDir, 0755, true);
-                }
-                @copy($file->getRealPath(), $uploadDir . '/' . $filename);
+            $filename = 'journal_' . $student->id . '_' . time() . '.' . ($file->getClientOriginalExtension() ?: 'jpg');
+            $uploadDir = public_path('uploads/journals');
+            if (!file_exists($uploadDir)) {
+                @mkdir($uploadDir, 0755, true);
+            }
+            $file->move($uploadDir, $filename);
+            $photoPath = 'uploads/journals/' . $filename;
 
-                $storageDir = public_path('storage/journals');
+            // Also copy to storage/app/public and public/storage
+            try {
+                $storageDir = storage_path('app/public/journals');
                 if (!file_exists($storageDir)) {
                     @mkdir($storageDir, 0755, true);
                 }
-                @copy($file->getRealPath(), $storageDir . '/' . $filename);
+                @copy($uploadDir . '/' . $filename, $storageDir . '/' . $filename);
+
+                $pubStorageDir = public_path('storage/journals');
+                if (!file_exists($pubStorageDir)) {
+                    @mkdir($pubStorageDir, 0755, true);
+                }
+                @copy($uploadDir . '/' . $filename, $pubStorageDir . '/' . $filename);
             } catch (\Exception $e) {}
         }
 
