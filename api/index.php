@@ -36,6 +36,9 @@ $defaults = [
     'QUEUE_CONNECTION' => 'sync',
     'MAIL_MAILER' => 'log',
     'DB_CONNECTION' => 'pgsql',
+    'APP_MAINTENANCE_DRIVER' => 'file',
+    'APP_MAINTENANCE_STORE' => 'array',
+    'AUTH_GUARD' => 'web',
 ];
 
 foreach ($defaults as $key => $val) {

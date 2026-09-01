@@ -14,7 +14,7 @@ return [
     |
     */
 
-    'default' => env('MAIL_MAILER', 'log'),
+    'default' => !empty(env('MAIL_MAILER')) ? env('MAIL_MAILER') : 'log',
 
     /*
     |--------------------------------------------------------------------------

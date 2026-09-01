@@ -16,8 +16,8 @@ return [
     */
 
     'defaults' => [
-        'guard' => env('AUTH_GUARD', 'web'),
-        'passwords' => env('AUTH_PASSWORD_BROKER', 'users'),
+        'guard' => !empty(env('AUTH_GUARD')) ? env('AUTH_GUARD') : 'web',
+        'passwords' => !empty(env('AUTH_PASSWORD_BROKER')) ? env('AUTH_PASSWORD_BROKER') : 'users',
     ],
 
     /*
