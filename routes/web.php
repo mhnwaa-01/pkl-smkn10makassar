@@ -13,6 +13,35 @@ use App\Http\Controllers\JournalController;
 use App\Http\Controllers\MonitoringController;
 use Illuminate\Support\Facades\Route;
 
+// Diagnostic Health Check Route for Vercel & Supabase
+Route::get('/health', function () {
+    $dbStatus = 'OK';
+    $dbError = null;
+    $userCount = 0;
+    try {
+        \Illuminate\Support\Facades\DB::connection()->getPdo();
+        $userCount = \App\Models\User::count();
+    } catch (\Throwable $e) {
+        $dbStatus = 'ERROR';
+        $dbError = $e->getMessage();
+    }
+
+    return response()->json([
+        'status' => 'online',
+        'php_version' => PHP_VERSION,
+        'environment' => app()->environment(),
+        'app_key_set' => !empty(config('app.key')),
+        'storage_path' => storage_path(),
+        'storage_writable' => is_writable(storage_path()),
+        'database' => [
+            'default' => config('database.default'),
+            'status' => $dbStatus,
+            'user_count' => $userCount,
+            'error' => $dbError,
+        ],
+    ]);
+});
+
 // Redirect root to login/dashboard
 Route::get('/', function () {
     return redirect()->route('dashboard');
