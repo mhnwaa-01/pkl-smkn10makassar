@@ -54,7 +54,7 @@ class MainActivity : AppCompatActivity() {
     companion object {
         private const val PREFS_NAME = "pkl_smkn10_prefs"
         private const val KEY_SERVER_URL = "server_url"
-        private const val DEFAULT_SERVER_URL = "http://10.0.2.2:8000"
+        private const val DEFAULT_SERVER_URL = "http://pkl.mysch.cloud"
     }
 
     private val fileChooserLauncher = registerForActivityResult(
@@ -299,8 +299,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun getServerUrl(): String {
-        val prefs = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
-        return prefs.getString(KEY_SERVER_URL, DEFAULT_SERVER_URL) ?: DEFAULT_SERVER_URL
+        return DEFAULT_SERVER_URL
     }
 
     private fun saveServerUrl(url: String) {

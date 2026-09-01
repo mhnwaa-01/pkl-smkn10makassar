@@ -82,7 +82,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:backgroundTint="#2563eb"
-                        android:text="Coba Lagi"
+                        android:text="Muat Ulang Halaman"
                         android:textColor="#ffffff"
                         android:textStyle="bold" />
 
@@ -93,7 +93,8 @@
                         android:layout_marginStart="12dp"
                         android:backgroundTint="#334155"
                         android:text="Ubah Server IP"
-                        android:textColor="#ffffff" />
+                        android:textColor="#ffffff"
+                        android:visibility="gone" />
                 </LinearLayout>
 
             </LinearLayout>
@@ -125,6 +126,7 @@
         android:src="@android:drawable/ic_menu_preferences"
         app:tint="#ffffff"
         app:fabSize="mini"
-        app:elevation="4dp" />
+        app:elevation="4dp"
+        android:visibility="gone" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
