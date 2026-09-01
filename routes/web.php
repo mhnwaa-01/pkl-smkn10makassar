@@ -55,6 +55,10 @@ Route::match(['get', 'post'], '/switch-role/{role}', [AuthController::class, 'sw
 
 // Download Mobile APK for Siswa
 Route::get('/download-apk', function () {
+    if (isset($_ENV['VERCEL']) || isset($_SERVER['VERCEL']) || getenv('VERCEL')) {
+        return redirect('/downloads/PKL-SMKN10-Siswa.apk');
+    }
+
     $apkPath = public_path('downloads/PKL-SMKN10-Siswa.apk');
     if (file_exists($apkPath)) {
         return response()->download($apkPath, 'PKL-SMKN10-Siswa.apk', [
