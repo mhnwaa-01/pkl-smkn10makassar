@@ -47,6 +47,15 @@
 
     <!-- Camera and Geolocation Helper Functions -->
     <script>
+        function dataURLtoFile(dataurl, filename) {
+            var arr = dataurl.split(','), mime = (arr[0].match(/:(.*?);/) || ['', 'image/jpeg'])[1],
+                bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
+            while(n--){
+                u8arr[n] = bstr.charCodeAt(n);
+            }
+            return new File([u8arr], filename, {type:mime});
+        }
+
         function cameraWidget(targetInputId) {
             return {
                 streamActive: false,
@@ -56,7 +65,7 @@
                 fallbackMode: false,
                 async startCamera() {
                     this.loading = true;
-                    // Check if WebRTC getUserMedia is available (HTTPS / Localhost)
+                    // Check if WebRTC getUserMedia is supported and protocol is secure
                     if (navigator.mediaDevices && typeof navigator.mediaDevices.getUserMedia === 'function') {
                         try {
                             this.stream = await navigator.mediaDevices.getUserMedia({
@@ -71,11 +80,11 @@
                             this.loading = false;
                             return;
                         } catch (err) {
-                            console.warn('WebRTC getUserMedia error or permission denied, switching to native camera fallback:', err);
+                            console.warn('WebRTC getUserMedia unavailable or denied. Opening native camera fallback:', err);
                         }
                     }
 
-                    // Fallback for HTTP or unsupported environments: Trigger native device camera
+                    // Fallback: Trigger native device camera
                     this.loading = false;
                     this.fallbackMode = true;
                     this.triggerNativeCamera();
@@ -121,18 +130,18 @@
                     this.capturedPhoto = dataUrl;
                     this.stopCamera();
 
-                    // Convert dataUrl to File object and set to target input file
-                    fetch(dataUrl)
-                        .then(res => res.blob())
-                        .then(blob => {
-                            const file = new File([blob], 'camera_capture_' + Date.now() + '.jpg', { type: 'image/jpeg' });
-                            const dataTransfer = new DataTransfer();
-                            dataTransfer.items.add(file);
-                            const fileInput = document.getElementById(targetInputId);
-                            if (fileInput) {
-                                fileInput.files = dataTransfer.files;
-                            }
-                        });
+                    // Synchronously create File and assign to input
+                    try {
+                        const file = dataURLtoFile(dataUrl, 'camera_capture_' + Date.now() + '.jpg');
+                        const dataTransfer = new DataTransfer();
+                        dataTransfer.items.add(file);
+                        const fileInput = document.getElementById(targetInputId);
+                        if (fileInput) {
+                            fileInput.files = dataTransfer.files;
+                        }
+                    } catch (e) {
+                        console.warn('DataTransfer fallback:', e);
+                    }
                 },
                 resetPhoto() {
                     this.capturedPhoto = null;

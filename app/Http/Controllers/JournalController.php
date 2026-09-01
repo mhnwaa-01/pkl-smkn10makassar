@@ -6,6 +6,7 @@ use App\Models\Journal;
 use App\Models\Student;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class JournalController extends Controller
 {
@@ -75,7 +76,24 @@ class JournalController extends Controller
 
         $photoPath = null;
         if ($request->hasFile('photo')) {
-            $photoPath = $request->file('photo')->store('journals', 'public');
+            $file = $request->file('photo');
+            $photoPath = Storage::disk('public')->putFile('journals', $file);
+            
+            // Copy directly to public/uploads/journals and public/storage/journals
+            try {
+                $filename = basename($photoPath);
+                $uploadDir = public_path('uploads/journals');
+                if (!file_exists($uploadDir)) {
+                    @mkdir($uploadDir, 0755, true);
+                }
+                @copy($file->getRealPath(), $uploadDir . '/' . $filename);
+
+                $storageDir = public_path('storage/journals');
+                if (!file_exists($storageDir)) {
+                    @mkdir($storageDir, 0755, true);
+                }
+                @copy($file->getRealPath(), $storageDir . '/' . $filename);
+            } catch (\Exception $e) {}
         }
 
         Journal::create([

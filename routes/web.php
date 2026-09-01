@@ -113,3 +113,26 @@ Route::middleware(['auth'])->group(function () {
     });
 
 });
+
+// Universal Storage Fallback Route for Shared Hosting without symlink support
+Route::get('/storage/{path}', function ($path) {
+    // 1. Check storage/app/public
+    $storageFile = storage_path('app/public/' . $path);
+    if (file_exists($storageFile)) {
+        return response()->file($storageFile);
+    }
+
+    // 2. Check public/uploads
+    $uploadsFile = public_path('uploads/' . $path);
+    if (file_exists($uploadsFile)) {
+        return response()->file($uploadsFile);
+    }
+
+    // 3. Check public/storage
+    $publicStorage = public_path('storage/' . $path);
+    if (file_exists($publicStorage)) {
+        return response()->file($publicStorage);
+    }
+
+    abort(404);
+})->where('path', '.*');

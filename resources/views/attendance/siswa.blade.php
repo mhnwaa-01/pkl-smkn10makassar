@@ -140,7 +140,8 @@
                         <div>
                             <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">Foto Wajah Presensi Datang</label>
                             <!-- Hidden File Input that supports native camera capture on all devices -->
-                            <input type="file" name="photo" id="photo_in" accept="image/*" capture="user" @change="handleFileInput($event)" required class="hidden">
+                            <input type="file" name="photo" id="photo_in" accept="image/*" capture="user" @change="handleFileInput($event)" class="hidden">
+                            <input type="hidden" name="photo_base64" :value="capturedPhoto">
                             
                             <div class="p-3.5 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl space-y-3">
                                 <div class="space-y-3">
@@ -280,7 +281,8 @@
                         <div>
                             <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">Foto Bukti Pulang</label>
                             <!-- Hidden File Input that supports native camera capture on all devices -->
-                            <input type="file" name="photo" id="photo_out" accept="image/*" capture="user" @change="handleFileInput($event)" required class="hidden">
+                            <input type="file" name="photo" id="photo_out" accept="image/*" capture="user" @change="handleFileInput($event)" class="hidden">
+                            <input type="hidden" name="photo_base64" :value="capturedPhoto">
                             
                             <div class="p-3.5 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl space-y-3">
                                 <div class="space-y-3">

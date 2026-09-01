@@ -85,8 +85,8 @@
             <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-sm flex flex-col md:flex-row gap-6">
                 <!-- Journal Photo / Placeholder -->
                 <div class="w-full md:w-48 h-36 bg-slate-100 dark:bg-slate-950 rounded-2xl border border-slate-200 dark:border-slate-800 flex-shrink-0 overflow-hidden flex items-center justify-center relative">
-                    @if($journal->photo)
-                        <img src="{{ asset('storage/' . $journal->photo) }}" alt="Foto Kegiatan" class="w-full h-full object-cover cursor-zoom-in" @click.prevent="openImagePreview('{{ asset('storage/' . $journal->photo) }}')">
+                    @if($journal->photo_url)
+                        <img src="{{ $journal->photo_url }}" alt="Foto Kegiatan" class="w-full h-full object-cover cursor-zoom-in" @click.prevent="openImagePreview('{{ $journal->photo_url }}')">
                         <div class="absolute bottom-2 right-2 px-2.5 py-0.5 bg-slate-900/80 rounded-full text-[10px] text-white font-semibold flex items-center gap-1">
                             <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
                             <span>Zoom</span>
@@ -111,7 +111,7 @@
                                 <span class="text-xs text-slate-500 dark:text-slate-400 font-medium">({{ $journal->student->class_name ?? '-' }})</span>
                             </div>
                             <div class="flex items-center gap-2">
-                                <button type="button" @click="openJournalModal(@js($journal->activity_title), @js(\Carbon\Carbon::parse($journal->date)->setTimezone('Asia/Makassar')->locale('id')->translatedFormat('l, d F Y')), @js($journal->student->name ?? 'Siswa'), @js($journal->student->class_name ?? '-'), @js($journal->activity_description), @js($journal->photo ? asset('storage/' . $journal->photo) : ''), @js($journal->status), @js($journal->verification_notes ?? ''))"
+                                <button type="button" @click="openJournalModal(@js($journal->activity_title), @js(\Carbon\Carbon::parse($journal->date)->setTimezone('Asia/Makassar')->locale('id')->translatedFormat('l, d F Y')), @js($journal->student->name ?? 'Siswa'), @js($journal->student->class_name ?? '-'), @js($journal->activity_description), @js($journal->photo_url ?? ''), @js($journal->status), @js($journal->verification_notes ?? ''))"
                                     class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-semibold rounded-full transition-colors inline-flex items-center gap-1">
                                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
                                     <span>Lihat Jurnal</span>

@@ -7,6 +7,7 @@ use App\Models\PklMonitoring;
 use App\Models\Student;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class MonitoringController extends Controller
 {
@@ -68,7 +69,24 @@ class MonitoringController extends Controller
 
         $photoPath = null;
         if ($request->hasFile('photo')) {
-            $photoPath = $request->file('photo')->store('monitorings', 'public');
+            $file = $request->file('photo');
+            $photoPath = Storage::disk('public')->putFile('monitorings', $file);
+            
+            // Copy directly to public/uploads/monitorings and public/storage/monitorings
+            try {
+                $filename = basename($photoPath);
+                $uploadDir = public_path('uploads/monitorings');
+                if (!file_exists($uploadDir)) {
+                    @mkdir($uploadDir, 0755, true);
+                }
+                @copy($file->getRealPath(), $uploadDir . '/' . $filename);
+
+                $storageDir = public_path('storage/monitorings');
+                if (!file_exists($storageDir)) {
+                    @mkdir($storageDir, 0755, true);
+                }
+                @copy($file->getRealPath(), $storageDir . '/' . $filename);
+            } catch (\Exception $e) {}
         }
 
         PklMonitoring::create([

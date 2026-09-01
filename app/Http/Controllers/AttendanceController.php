@@ -83,9 +83,9 @@ class AttendanceController extends Controller
             return back()->with('error', 'Anda sudah melakukan presensi datang hari ini.');
         }
 
-        $request->validate([
-            'photo' => ['required', 'image', 'max:5120'],
-        ]);
+        if (!$request->hasFile('photo') && !$request->filled('photo_base64')) {
+            return back()->with('error', 'Wajib mengambil foto wajah presensi.');
+        }
 
         $setting = AttendanceSetting::getSetting();
 
@@ -97,21 +97,35 @@ class AttendanceController extends Controller
             $file = $request->file('photo');
             $photoPath = Storage::disk('public')->putFile('attendances', $file);
             
-            // Copy directly to public/uploads/attendances and public/storage/attendances for shared hosting compatibility
             try {
                 $filename = basename($photoPath);
                 $uploadDir = public_path('uploads/attendances');
-                if (!file_exists($uploadDir)) {
-                    @mkdir($uploadDir, 0755, true);
-                }
+                if (!file_exists($uploadDir)) @mkdir($uploadDir, 0755, true);
                 @copy($file->getRealPath(), $uploadDir . '/' . $filename);
 
                 $storageDir = public_path('storage/attendances');
-                if (!file_exists($storageDir)) {
-                    @mkdir($storageDir, 0755, true);
-                }
+                if (!file_exists($storageDir)) @mkdir($storageDir, 0755, true);
                 @copy($file->getRealPath(), $storageDir . '/' . $filename);
             } catch (\Exception $e) {}
+        } elseif ($request->filled('photo_base64') && str_starts_with($request->photo_base64, 'data:image')) {
+            $base64 = $request->photo_base64;
+            $imageParts = explode(';base64,', $base64);
+            if (isset($imageParts[1])) {
+                $imageBytes = base64_decode($imageParts[1]);
+                $filename = 'attendances/in_' . $student->id . '_' . time() . '.jpg';
+                Storage::disk('public')->put($filename, $imageBytes);
+                $photoPath = $filename;
+                try {
+                    $onlyName = basename($filename);
+                    $uploadDir = public_path('uploads/attendances');
+                    if (!file_exists($uploadDir)) @mkdir($uploadDir, 0755, true);
+                    file_put_contents($uploadDir . '/' . $onlyName, $imageBytes);
+
+                    $storageDir = public_path('storage/attendances');
+                    if (!file_exists($storageDir)) @mkdir($storageDir, 0755, true);
+                    file_put_contents($storageDir . '/' . $onlyName, $imageBytes);
+                } catch (\Exception $e) {}
+            }
         }
 
         Attendance::updateOrCreate(
@@ -160,9 +174,9 @@ class AttendanceController extends Controller
             return back()->with('error', 'Presensi Pulang masih terkunci! Anda baru dapat melakukan presensi pulang mulai pukul ' . substr($allowedOutTime, 0, 5) . ' WITA.');
         }
 
-        $request->validate([
-            'photo' => ['required', 'image', 'max:5120'],
-        ]);
+        if (!$request->hasFile('photo') && !$request->filled('photo_base64')) {
+            return back()->with('error', 'Wajib mengambil foto wajah presensi pulang.');
+        }
 
         // Calculate early status
         $status = ($nowTime < $setting->check_out_time) ? 'Pulang Cepat' : 'Tepat Waktu';
@@ -172,21 +186,35 @@ class AttendanceController extends Controller
             $file = $request->file('photo');
             $photoPath = Storage::disk('public')->putFile('attendances', $file);
             
-            // Copy directly to public/uploads/attendances and public/storage/attendances for shared hosting compatibility
             try {
                 $filename = basename($photoPath);
                 $uploadDir = public_path('uploads/attendances');
-                if (!file_exists($uploadDir)) {
-                    @mkdir($uploadDir, 0755, true);
-                }
+                if (!file_exists($uploadDir)) @mkdir($uploadDir, 0755, true);
                 @copy($file->getRealPath(), $uploadDir . '/' . $filename);
 
                 $storageDir = public_path('storage/attendances');
-                if (!file_exists($storageDir)) {
-                    @mkdir($storageDir, 0755, true);
-                }
+                if (!file_exists($storageDir)) @mkdir($storageDir, 0755, true);
                 @copy($file->getRealPath(), $storageDir . '/' . $filename);
             } catch (\Exception $e) {}
+        } elseif ($request->filled('photo_base64') && str_starts_with($request->photo_base64, 'data:image')) {
+            $base64 = $request->photo_base64;
+            $imageParts = explode(';base64,', $base64);
+            if (isset($imageParts[1])) {
+                $imageBytes = base64_decode($imageParts[1]);
+                $filename = 'attendances/out_' . $student->id . '_' . time() . '.jpg';
+                Storage::disk('public')->put($filename, $imageBytes);
+                $photoPath = $filename;
+                try {
+                    $onlyName = basename($filename);
+                    $uploadDir = public_path('uploads/attendances');
+                    if (!file_exists($uploadDir)) @mkdir($uploadDir, 0755, true);
+                    file_put_contents($uploadDir . '/' . $onlyName, $imageBytes);
+
+                    $storageDir = public_path('storage/attendances');
+                    if (!file_exists($storageDir)) @mkdir($storageDir, 0755, true);
+                    file_put_contents($storageDir . '/' . $onlyName, $imageBytes);
+                } catch (\Exception $e) {}
+            }
         }
 
         $locationOut = $request->input('location') ?: $attendance->location;
